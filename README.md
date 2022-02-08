@@ -1,7 +1,5 @@
 # Drowziness_detection_cars
 
-# Credits:DANUSHRAJ M
-
 
 
 # =>Implemnt the process with traning the 'model.py' 
