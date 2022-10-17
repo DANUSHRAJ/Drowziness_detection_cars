@@ -1,22 +1,23 @@
 import os
 import tensorflow
-from tensorflow.keras.preprocessing import image
+from tensorflow import keras
+from keras.preprocessing import image
 import matplotlib.pyplot as plt 
 import numpy as np
-from tensorflow.keras.utils import to_categorical
+from keras.utils import to_categorical
 import random,shutil
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dropout,Conv2D,Flatten,Dense, MaxPooling2D, BatchNormalization
+from keras.models import Sequential
+from keras.layers import Dropout,Conv2D,Flatten,Dense, MaxPooling2D, BatchNormalization
 
-from tensorflow.python.keras.utils import generic_utils
-from tensorflow.keras.models import load_model
+from keras.utils import generic_utils
+from keras.models import load_model
 
 
 def generator(dir, gen=image.ImageDataGenerator(rescale=1./255), shuffle=True,batch_size=1,target_size=(24,24),class_mode='categorical' ):
 
     return gen.flow_from_directory(dir,batch_size=batch_size,shuffle=shuffle,color_mode='grayscale',class_mode=class_mode,target_size=target_size)
 
-BS= 32
+BS= 64
 TS=(24,24)
 train_batch= generator('train',shuffle=True, batch_size=BS,target_size=TS)
 valid_batch= generator('train',shuffle=True, batch_size=BS,target_size=TS)
@@ -57,4 +58,4 @@ model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accurac
 
 model.fit_generator(train_batch, validation_data=valid_batch,epochs=15,steps_per_epoch=SPE ,validation_steps=VS)
 
-model.save('cnnCat1.h5', overwrite=True)
+model.save('find_drowziness_Model.h5', overwrite=True)

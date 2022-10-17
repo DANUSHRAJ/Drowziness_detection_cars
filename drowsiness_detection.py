@@ -1,8 +1,9 @@
 import cv2
 import os
 import tensorflow
-from tensorflow.python.keras.utils import generic_utils
-from tensorflow.keras.models import load_model
+from tensorflow import keras
+from keras.utils import generic_utils
+from keras.models import load_model
 import numpy as np
 from pygame import mixer
 import time
@@ -13,15 +14,15 @@ import pyttsx3
 mixer.init()
 sound = mixer.Sound('alarm.wav')
 
-face = cv2.CascadeClassifier('haar cascade files\haarcascade_frontalface_alt.xml')
-leye = cv2.CascadeClassifier('haar cascade files\haarcascade_lefteye_2splits.xml')
-reye = cv2.CascadeClassifier('haar cascade files\haarcascade_righteye_2splits.xml')
+face = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
+leye = cv2.CascadeClassifier('haarcascade_lefteye_2splits.xml')
+reye = cv2.CascadeClassifier('haarcascade_righteye_2splits.xml')
 
 
 
 lbl=['CLOSE','OPEN']
 
-model = load_model('cnnCat1.h5')
+model = load_model('find_drowziness_Model.h5')
 path = os.getcwd()
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -73,7 +74,7 @@ while(True):
         r_eye= r_eye/255
         r_eye=  r_eye.reshape(24,24,-1)
         r_eye = np.expand_dims(r_eye,axis=0)
-        rpred = model.predict_classes(r_eye)
+        rpred = np.argmax(model.predict(r_eye),axis=1)
         if(rpred[0]==1):
             lbl='Open'
         if(rpred[0]==0):
@@ -88,7 +89,7 @@ while(True):
         l_eye= l_eye/255
         l_eye=l_eye.reshape(24,24,-1)
         l_eye = np.expand_dims(l_eye,axis=0)
-        lpred = model.predict_classes(l_eye)
+        lpred = np.argmax(model.predict(l_eye),axis=1)
         if(lpred[0]==1):
             lbl='Open'
         if(lpred[0]==0):
@@ -113,7 +114,7 @@ while(True):
         cv2.imwrite(os.path.join(path,'image.jpg'),frame)
         try:
             sound.play()
-            warningmsg()
+            # warningmsg()
             
         except:  # isplaying = False
             pass
